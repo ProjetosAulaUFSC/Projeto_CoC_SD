@@ -1,0 +1,25 @@
+.home_container{
+    color: #fff;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px;
+}
+
+.home_container p{
+    padding-top: 10px;
+    opacity: 0.5;
+}
+
+.home_container a{
+    text-decoration: none;
+    color: #fff;
+    border-bottom: 2px solid #410082;
+    transition: color 0.5s;
+}
+
+.home_container a:hover{
+    color: #410082;
+}

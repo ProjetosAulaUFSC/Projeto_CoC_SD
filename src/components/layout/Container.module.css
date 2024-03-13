@@ -1,0 +1,26 @@
+.container{
+    width: 100%;
+    max-width: 85%;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.min-height{
+    min-height: 80%;
+}
+
+.start{
+    justify-content: flex-start;
+}
+
+.column{
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.center_footer{
+    align-items: center;
+    max-width: 20%;
+}

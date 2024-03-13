@@ -1,0 +1,68 @@
+{
+  "characters": [
+    {
+      "id": "2756",
+      "name": "Debora",
+      "STR": "50",
+      "CON": "70",
+      "SIZ": "40",
+      "DEX": "50",
+      "APP": "70",
+      "INT": "70",
+      "POW": "60",
+      "EDU": "70",
+      "LUC": "40",
+      "occupation": {
+        "id": "4",
+        "name": "Taxi"
+      },
+      "HP": "10",
+      "MAG": "12",
+      "LUC_Temp": "40",
+      "SAN_Temp": "50"
+    },
+    {
+      "id": "fc76",
+      "name": "Flávia",
+      "STR": "40",
+      "DEX": "40",
+      "POW": "60",
+      "CON": "50",
+      "APP": "90",
+      "EDU": "90",
+      "SIZ": "40",
+      "INT": "80",
+      "LUC": "40",
+      "occupation": {
+        "id": "2",
+        "name": "Eletricista"
+      },
+      "HP": "5",
+      "MAG": "10",
+      "LUC_Temp": "40",
+      "SAN_Temp": "60"
+    }
+  ],
+  "occupations": [
+    {
+      "id": "1",
+      "name": "Professor"
+    },
+    {
+      "id": "2",
+      "name": "Eletricista"
+    },
+    {
+      "id": "3",
+      "name": "Caronte"
+    },
+    {
+      "id": "4",
+      "name": "Taxi"
+    },
+    {
+      "id": "5",
+      "name": "Atendente"
+    }
+  ]
+}

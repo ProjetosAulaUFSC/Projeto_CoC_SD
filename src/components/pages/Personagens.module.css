@@ -1,0 +1,47 @@
+.personagem_container{
+    width: 100%;
+    
+    padding: 64px;
+
+    display: flex;
+    flex-direction: column;
+
+    color: #fff;
+}
+
+.personagem_container_titulo{
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.personagem_container_cards{
+    width: 100%;
+    height: 100%;
+    flex-wrap: wrap;
+
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.personagem_container_cards_p{
+    display: flex;
+    height: 100%;
+    margin-top: 50px;
+    opacity: 0.5;
+}
+
+.personagem_container a{
+    text-decoration: none;
+    color: #fff;
+    border-bottom:2px solid #410082;
+    transition: color 0.5s;
+}
+
+.personagem_container a:hover{
+    color: #410082;
+}

@@ -1,0 +1,25 @@
+
+.project_module h2{
+    text-align: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #410082;
+    width: 100%;
+}
+
+.project_module form{
+    display: flex;
+    flex-direction:column;
+
+    justify-content: center;
+    align-items: center;
+
+}
+
+.project_module form div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    width: 400px;
+
+}
