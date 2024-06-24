@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const characterSchema = new mongoose.Schema({
+const CharacterSchema = new mongoose.Schema({
     id: { type: Number, required: true },
     name: { type: String, required: true },
     STR: { type: Number, required: true },
@@ -19,12 +19,12 @@ const characterSchema = new mongoose.Schema({
     fid_occupation: { type: Number, required: true }
 }, { versionKey: false });
 
-const occupationSchema = new mongoose.Schema({
+const OccupationSchema = new mongoose.Schema({
     id: { type: Number, required: true },
     name: { type: String, required: true }
 }, { versionKey: false });
 
-const Character = mongoose.model('character', characterSchema);
-const Occupation = mongoose.model('occupation', occupationSchema);
+const Character = mongoose.model('Characters', CharacterSchema);
+const Occupation = mongoose.model('Occupations', OccupationSchema);
 
 module.exports = { Character, Occupation };

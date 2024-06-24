@@ -1,14 +1,17 @@
-const { Character, Occupation } = require('../models/model.js');
+require('dotenv').config();
+const { Character, Occupation } = require('./models/model.js');
 const {mongoose} = require('mongoose');
 const express = require('express');
 const router = express.Router();
-const { database } = require('../db');
-const { getNextDatabase } = require('../sequencer');
+const mongoString = process.env.DATABASE_URL;
+
+let currentDb = 0;
 
 router.get('/getAllCharacters', async (req, res) => {
     try {
-        // const db = getNextDatabase(databases);
-        const data = await Character.find().exec();
+        await connect_db();
+        const data = await Character.find();
+        console.log(data);
         return res.json(data);
     } catch (error) {
         console.error('Error retrieving characters:', error);
@@ -38,3 +41,13 @@ router.get('/getAllOccupations', async (req, res) => {
 });
 
 module.exports = router;
+
+async function connect_db(){
+    await mongoose.disconnect();
+    currentDb = currentDb%4+1;
+    console.log(`Servidor atual é o Server${currentDb}`);
+    await mongoose.connect(`${mongoString}Server${currentDb}`);
+    const database = mongoose.connection;
+    database.on('error', () =>{connect_db()})
+    database.once('connected', ()=>{console.log('Banco de Dados conectado');})
+}
