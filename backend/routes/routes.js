@@ -1,11 +1,11 @@
 require('dotenv').config();
-const { Character, Occupation } = require('./models/model.js');
+const { Character, Occupation } = require('../models/model.js');
+const { databases } = require('../db.js');
 const {mongoose} = require('mongoose');
 const express = require('express');
 const router = express.Router();
-const mongoString = process.env.DATABASE_URL;
 
-let currentDb = 0;
+let currentDb = databases[3];
 
 router.get('/getAllCharacters', async (req, res) => {
     try {
@@ -21,6 +21,7 @@ router.get('/getAllCharacters', async (req, res) => {
 
 router.get('/getOneCharacter', async (req, res) => {
     try {
+        await connect_db();
         const data = await Character.aggregate([{ $match: { username: req.query.name } }]);
         return res.json(data[0]);
     } catch (error) {
@@ -31,8 +32,8 @@ router.get('/getOneCharacter', async (req, res) => {
 
 router.get('/getAllOccupations', async (req, res) => {
     try {
-        const db = getNextDatabase(databases);
-        const data = await Occupation.find().exec();
+        await connect_db();
+        const data = await Occupation.find();
         return res.json(data);
     } catch (error) {
         console.error('Error retrieving occupations:', error);
@@ -44,9 +45,9 @@ module.exports = router;
 
 async function connect_db(){
     await mongoose.disconnect();
-    currentDb = currentDb%4+1;
-    console.log(`Servidor atual é o Server${currentDb}`);
-    await mongoose.connect(`${mongoString}Server${currentDb}`);
+    const selectedDB = currentDb.nextServer;
+    console.log(`Servidor atual é o Server${selectedDB.id}`);
+    await mongoose.connect(selectedDB.uri);
     const database = mongoose.connection;
     database.on('error', () =>{connect_db()})
     database.once('connected', ()=>{console.log('Banco de Dados conectado');})
