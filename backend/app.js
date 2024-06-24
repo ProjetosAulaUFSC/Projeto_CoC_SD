@@ -5,9 +5,8 @@ const mongoose = require('mongoose');
 const WebSocket = require('ws');
 const cors = require('cors');
 
-const routes = require('./routes/routes'); // Importa as rotas definidas
-const mongoString = process.env.DATABASE_URL;
-const port = process.env.PORT;
+const routes = require('./routes/routes');
+const port = parseInt(process.env.PORT);
 
 const app = express();
 
@@ -16,24 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use(routes);
 
-// Conectar ao MongoDB
-mongoose.connect(mongoString, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
-
-const database = mongoose.connection;
-database.on('error', (error) => {
-    console.error('Erro ao conectar ao banco de dados:', error);
-});
-database.once('connected', () => {
-    console.log('Conectado ao banco de dados');
-});
-
-// Criar e configurar o servidor WebSocket
-const wss = new WebSocket.Server(
-    {port: 8000},
-    function () {console.log("WebSocker = 8000");}
+const wss = new WebSocket.Server({ port: 8000 }, () => {
+    console.log("WebSocket server running on port 8000");}
 );
 
 let clients = [];
@@ -45,7 +28,7 @@ wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         console.log('Mensagem recebida:', message);
 
-        // Broadcast da mensagem para todos os clientes conectados
+        // Broadcast message to all connected clients
         clients.forEach(client => {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
                 client.send(message);
@@ -59,4 +42,6 @@ wss.on('connection', (ws) => {
     });
 });
 
-app.listen(port, () => {console.log('Servidor iniciado na porta 3000');});
+app.listen(port, () => {
+    console.log(`Servidor iniciado na porta ${port}`);
+});
