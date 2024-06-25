@@ -1,7 +1,7 @@
 {
   "characters": [
     {
-      "id": "2756",
+      "id": "1",
       "name": "Debora",
       "STR": "50",
       "CON": "70",
@@ -22,7 +22,7 @@
       "SAN_Temp": "50"
     },
     {
-      "id": "fc76",
+      "id": "2",
       "name": "Flávia",
       "STR": "40",
       "DEX": "40",

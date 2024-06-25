@@ -4,102 +4,60 @@ const router = express.Router();
 const utils = require('../utils/utils.js');
 
 router.get('/getAllCharacters', async (req, res) => {
-    try {
-        await utils.connect_db();
-        const data = await Character.find().exec();
-        return res.json(data);
-    } catch (error) {
-        console.error('Error retrieving characters:', error);
-        return res.status(500).json({ message: error.message });
-    }
+    return await utils.find_in_db("Character", {}, res);
 });
-
+//testado
 router.get('/getOneCharacter', async (req, res) => {
-    try {
-        await utils.connect_db();
-        const data = await Character.find({ name: req.body.name }).exec();
-        return res.json(data);
-    } catch (error) {
-        console.error('Error retrieving character:', error);
-        return res.status(500).json({ message: error.message });
-    }
+    return await utils.find_in_db("Character", {name: req.body.name}, res);
 });
-
+//testado
 router.post('/createCharacter', async (req, res) => {   
-    try {
-        let newCharacter;
-        for(let i = 0; i < utils.databases_size; i++){   
-            await utils.connect_db();
-            const { occupation, ...characterData } = req.body;
-            const foundOccupation = await Occupation.findOne({ name: occupation }).exec();
-            if (!foundOccupation) return res.status(404).json({ message: 'No occupation with this name found' });
-            
-            characterData.fid_occupation = foundOccupation._id;
-            newCharacter = new Character(characterData);
-            await newCharacter.save();
-        }
-        return res.json(newCharacter);
-    } catch (error) {
-        console.error('Error creating character:', error);
-        return res.status(500).json({ message: error.message });
-    }
+    return utils.put_post_character("Post", req.body, res);
 });
-
+//testado
 router.put('/updateCharacter', async (req, res) => {
-    try {
+    return utils.put_post_character("Put", req.body, res);
+});
+//testado
+router.delete('/deleteCharacter', async (req, res)=>{
+    try{
         await utils.connect_db();
-        const data = await Character.findOneAndUpdate({ name: req.body.name }, req.body, { new: true }).exec();
-        return res.json(data);
-    } catch (error) {
-        console.error('Error updating character:', error);
+        const exists = await Character.findOne({name: req.body.name});
+        if(!exists) return res.status(404).json({message: "This character doesn't exist"});
+        const data = await utils.replicate("Character", "Delete", req.body);
+        return res.status(200).json(data);
+    } catch (error){
+        console.log('Erro deleting character: ', error);
         return res.status(500).json({ message: error.message });
     }
 });
 
+//testado
 router.get('/getAllOccupations', async (req, res) => {
-    try {
-        await utils.connect_db();
-        const data = await Occupation.find().exec();
-        return res.json(data);
-    } catch (error) {
-        console.error('Error retrieving occupations:', error);
-        return res.status(500).json({ message: error.message });
-    }
+    return await utils.find_in_db("Occupation", {}, res);
 });
-
+//testado
 router.get('/getOneOccupation', async (req, res) => {
-    try {
-        await utils.connect_db();
-        const data = await Occupation.findOne({ name: req.body.name }).exec();
-        return res.json(data);
-    } catch (error) {
-        console.error('Error retrieving occupation:', error);
-        return res.status(500).json({ message: error.message });
-    }
+    return await utils.find_in_db("Occupation", {name: req.body.name}, res);
 });
-
+//testado
 router.post('/createOccupation', async (req, res) => {
     try {
+        console.log("Chamou POST Occupation");
         await utils.connect_db();
         const existingOcuppation = await Occupation.findOne({ name: req.body.name }).exec();
         if(existingOcuppation) return res.status(409).json({ message: 'Occupation already exists' });
         const highestIdOccupation = await Occupation.findOne().sort({ id: -1 }).exec();
         const highestId = highestIdOccupation ? highestIdOccupation.id : 0;
         let newOccupationData = { id: highestId + 1, name: req.body.name };
-        let newOccupation = new Occupation(newOccupationData);
-        await newOccupation.save();
-        for(let i=0; i<3;i++){
-            await utils.connect_db();
-            newOccupation = new Occupation(newOccupationData);
-            await newOccupation.save();
-        }
+        let newOccupation = await utils.replicate("Occupation", "Post", newOccupationData);
         return res.json(newOccupation);
     } catch (error) {
         console.error('Error creating occupation:', error);
         return res.status(500).json({ message: error.message });
     }
 });
-
+//arrumar para usar o replicate
 router.put('/updateOccupation', async (req, res) => {
     try {
         let data;
@@ -113,22 +71,23 @@ router.put('/updateOccupation', async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 });
-
+//testado
 router.delete('/deleteOccupation', async (req, res) => {
     try {
-        let data;
-        for(let i = 0; i < utils.databases_size(); i++){
-            await utils.connect_db();
-            data = await Occupation.findOneAndDelete({ name: req.body.name }).exec();
-        }
-        return res.json(data);
+        await utils.connect_db();
+        const used = await Character.findOne({fid_occupation: req.body.id});
+        if(used) return res.status(403).json({message: "There is at least one Character of this occupation. Edit the character before deletins this occupation"});
+        const exist = await Occupation.findOne({name: req.body.name});
+        if(!exist) return res.status(404).json("There is no such Occupation");
+        const data = await utils.replicate("Occupation", "Delete", req.body);
+        return res.status(200).json(data);
     } catch (error) {
         console.error('Error deleting occupation:', error);
         return res.status(500).json({ message: error.message });
     }
 });
 
-router.delete('/deleteDB', async (req, res) => {await utils.kill();});
-router.post('/createDB', async (req, res) => {await utils.create();});
+router.delete('/killDB', (req, res) => { return res.status(200).json(utils.kill());});
+router.post('/ressurectB', (req, res) => { return res.status(200).json(utils.ressurect());});
 
 module.exports = router;

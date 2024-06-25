@@ -19,6 +19,18 @@ const wss = new WebSocket.Server({ port: 8000 }, () => {
 );
 
 let clients = [];
+/*
+TODO Criar a lógica do sequenciador baseado em websocket:
+- Criar lista com as conexões atuais
+- Salvar na fila os objetos WsRequest
+- Enviar os requests na ordem para o backend
+
+TODO Criar a estrutura de WsRequest baseada no seguinte objeto:
+{
+  req: request,
+  ws: ws_connection,
+}
+*/
 
 wss.on('connection', (ws) => {
     clients.push(ws);
