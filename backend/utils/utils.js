@@ -156,8 +156,8 @@ async function replicate(type, operation, data){
 function databases_size(){return databases.length;}
 
 function kill(){
-    update_db().active = false; 
-    return ({message: `Banco de dados ${update_db().id} falhou`});
+    currentDB.active = false; 
+    return ({message: `Banco de dados ${currentDB.id} falhou`});
 }
 
 function ressurect(){
