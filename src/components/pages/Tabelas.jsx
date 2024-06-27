@@ -4,19 +4,19 @@ import Tabela3x4 from '../form/Table3x4'
 function Tabelas(){
     // Dados para a primeira tabela
     const tableData1 = {
-        header: [' ', 'Banco 1', 'Banco 2', 'Banco 3'],
+        header: [' ', 'Banco 1', 'Banco 2', 'Banco 3', 'Banco 4'],
         rows: [
-        ['Token Atual', '-', '-', '-'],
-        ['Histórico Erro', '-', '-', '-']
+        ['Token Atual', '-', '-', '-', '-'],
+        ['Histórico Erro', '-', '-', '-', '-']
         ]
     };
 
     // Dados para a segunda tabela
     const tableData2 = {
-        header: ['Estado', 'Banco 1', 'Banco 2', 'Banco 3'],
+        header: ['Estado', 'Banco 1', 'Banco 2', 'Banco 3', 'Banco 4'],
         rows: [
-        ['Aguardando', '-', '-', '-'],
-        ['Acessando', '-', '-', '-']
+        ['Aguardando', '-', '-', '-', '-'],
+        ['Acessando', '-', '-', '-', '-']
         ]
     };
 
@@ -30,14 +30,18 @@ function Tabelas(){
 
     const [dbData, setDbData] = useState(null);
 
-    const [flag, setflag] = useState(false);
-
-    useEffect(() => {
+    const syncDb = async()=>{
         fetch('http://localhost:3000/currentDB', {
             method: 'GET',
             headers:{'Content-type':'application/json'},
         }).then((response)=>response.json()).then((response)=>setDbData(response)).catch((err)=>console.log(err))
         // .then(console.log(dbData))
+    }
+
+    useEffect(() => {
+        syncDb()
+        const intervalId = setInterval(syncDb, 3000);
+        return () => clearInterval(intervalId);
       }, []);  
     
 
