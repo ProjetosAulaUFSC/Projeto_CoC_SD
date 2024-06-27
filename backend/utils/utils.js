@@ -106,6 +106,7 @@ async function find_in_db(type, filter, res){
 //testado
 async function put_post_character(operation, data, res){
     try {
+        pause();
         await connect_db();
         const ret = await Character.findOne({name: data.name});
         if(operation === "Put" && !ret) return res.status(404).json({message: "No character with this name found"});
@@ -150,6 +151,7 @@ async function replicate(type, operation, data){
         }
         else console.log("DEU BO");
     }
+    unpause();
     return newObject
 }
 
@@ -165,4 +167,7 @@ function ressurect(){
     return ({message: "Todos os bancos voltaram a funcionar normalmente"});
 }
 
-module.exports = { connect_db, replicate, find_in_db, kill, ressurect, put_post_character, databases_size };
+function pause(){stop_token = true;}
+function unpause(){stop_token = false;}
+
+module.exports = { connect_db, replicate, find_in_db, kill, ressurect, put_post_character, databases_size, pause };
