@@ -87,7 +87,8 @@ router.delete('/deleteOccupation', async (req, res) => {
     }
 });
 
-router.delete('/killDB', (req, res) => { return res.status(200).json(utils.kill());});
-router.post('/ressurectB', (req, res) => { return res.status(200).json(utils.ressurect());});
+
+router.get('/killDB', (req, res) => { return res.status(200).json(utils.kill());});
+router.get('/ressurectDB', (req, res) => { return res.status(200).json(utils.ressurect());});
 
 module.exports = router;
