@@ -12,7 +12,7 @@ ws.on('open', () => {
         entity: 'Character',
         timestamp: Date.now(),  // Adiciona o timestamp
         data: {
-            name: 'Deborei',
+            name: 'Deboras',
             STR: 50,
             CON: 70,
             SIZ: 40,

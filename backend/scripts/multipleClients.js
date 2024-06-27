@@ -11,6 +11,7 @@ function createClient(clientNumber) {
             type: 'post',
             operation: 'Post',
             entity: 'Character',
+            clientNumber: clientNumber,  // Adiciona o número do cliente na mensagem
             timestamp: Date.now() + clientNumber * 300,  // Adiciona o timestamp com um delay por cliente
             data: {
                 name: `Character${clientNumber}`,

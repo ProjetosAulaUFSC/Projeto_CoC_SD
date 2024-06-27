@@ -8,24 +8,28 @@ let processing = false;
 function initializeWebSocket(server) {
     const wss = new WebSocket.Server({ server });
 
-    wss.on('connection', (ws) => {
-        clients.push(ws);
-        console.log('Novo cliente conectado. Total de clientes:', clients.length);
+    wss.on('connection', (ws, req) => {
+        const clientIP = req.socket.remoteAddress;
+        clients.push({ ws, ip: clientIP });
+        console.log('Novo cliente conectado. Total de clientes:', clients.length, 'IP do cliente:', clientIP);
 
         ws.on('message', async (message) => {
-            console.log('Mensagem recebida:', message);
+            console.log('Mensagem recebida:', message, 'do IP:', clientIP);
 
-            const wsRequest = { req: JSON.parse(message), ws: ws };
+            const wsRequest = { req: JSON.parse(message), ws: ws, ip: clientIP };
             requestQueue.push(wsRequest);
             requestQueue.sort((a, b) => a.req.timestamp - b.req.timestamp);  // Ordena por timestamp
+
+            console.log('Fila de requisições ordenada:', requestQueue.map(r => ({ timestamp: r.req.timestamp, client: r.req.clientNumber, ip: r.ip })));
+
             if (!processing) {
                 await processQueue();
             }
         });
 
         ws.on('close', () => {
-            clients = clients.filter(client => client !== ws);
-            console.log('Cliente desconectado. Total de clientes:', clients.length);
+            clients = clients.filter(client => client.ws !== ws);
+            console.log('Cliente desconectado. Total de clientes:', clients.length, 'IP do cliente:', clientIP);
         });
     });
 
@@ -38,7 +42,7 @@ async function processQueue() {
 
     while (requestQueue.length > 0) {
         const currentRequest = requestQueue.shift();
-        const { req, ws } = currentRequest;
+        const { req, ws, ip } = currentRequest;
 
         try {
             await connect_db();  // Garante que a conexão com o banco de dados está estabelecida
@@ -51,8 +55,10 @@ async function processQueue() {
                 response = { status: 400, message: 'Invalid request type' };
             }
 
+            console.log(`Enviando requisição para o backend: timestamp ${req.timestamp}, cliente ${req.clientNumber}, IP ${ip}`);
             ws.send(JSON.stringify(response));
         } catch (error) {
+            console.error('Erro ao processar requisição:', error);
             ws.send(JSON.stringify({ status: 500, message: error.message }));
         }
     }
