@@ -8,8 +8,7 @@ function Tabelas(){
     let tableData1 = {
         header: [' ', 'Banco 1', 'Banco 2', 'Banco 3', 'Banco 4'],
         rows: [
-        ['Token Atual', '-', '-', '-', '-'],
-        ['Histórico Erro', '-', '-', '-', '-']
+        ['Token Atual', '-', '-', '-', '-']
         ]
     };
 
@@ -57,8 +56,7 @@ function Tabelas(){
         fetch('http://localhost:3000/killDB', {
         })
         console.log("Acionado")
-        let id = dbData.id
-        tableData1.rows[1][id] = 'X'
+
       }    
       
       function Ressucitar(){
@@ -69,6 +67,7 @@ function Tabelas(){
 
       
       tableData1.rows[0][dbData.id] = 'X'
+      
     //   if(tableData1.active == false){tableData1.rows[1][dbData.id] = "X"}
 
     return (
