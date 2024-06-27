@@ -2,6 +2,7 @@ const { Character, Occupation } = require('../models/model.js');
 const express = require('express');
 const router = express.Router();
 const utils = require('../utils/utils.js');
+const { getLogs } = require('../utils/websocket');
 
 router.get('/getAllCharacters', async (req, res) => {
     return await utils.find_in_db("Character", {}, res);
@@ -90,6 +91,10 @@ router.delete('/deleteOccupation', async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 });
+
+
+
+router.get('/logs', (req, res) => {const logs = getLogs(); res.status(200).json(logs);});
 
 router.get('/currentDB', (req, res) => { return res.status(200).json(utils.used_db());});
 router.get('/killDB', (req, res) => { return res.status(200).json(utils.kill());});

@@ -4,23 +4,34 @@ const { put_post_character, find_in_db, connect_db } = require('../utils/utils')
 let clients = [];
 let requestQueue = [];
 let processing = false;
+let logs = [];  // Array para armazenar os logs
+let processingQueue = [];
+let historyQueue = [];
 
 function initializeWebSocket(server) {
     const wss = new WebSocket.Server({ server });
 
-    wss.on('connection', (ws, req) => {
-        const clientIP = req.socket.remoteAddress;
-        clients.push({ ws, ip: clientIP });
-        console.log('Novo cliente conectado. Total de clientes:', clients.length, 'IP do cliente:', clientIP);
+    wss.on('connection', (ws) => {
+        const clientNumber = clients.length + 1;
+        clients.push({ ws, clientNumber });
+        console.log('Novo cliente conectado. Total de clientes:', clients.length);
 
         ws.on('message', async (message) => {
-            console.log('Mensagem recebida:', message, 'do IP:', clientIP);
+            console.log('Mensagem recebida do cliente:', clientNumber);
 
-            const wsRequest = { req: JSON.parse(message), ws: ws, ip: clientIP };
+            const wsRequest = { req: JSON.parse(message), ws: ws, clientNumber };
             requestQueue.push(wsRequest);
             requestQueue.sort((a, b) => a.req.timestamp - b.req.timestamp);  // Ordena por timestamp
 
-            console.log('Fila de requisições ordenada:', requestQueue.map(r => ({ timestamp: r.req.timestamp, client: r.req.clientNumber, ip: r.ip })));
+            // Log para fila de requisições ordenada
+            const logEntry = {
+                timestamp: Date.now(),
+                type: wsRequest.req.type,
+                clientNumber: clientNumber,
+                queue: requestQueue.map(r => ({ timestamp: r.req.timestamp, client: r.clientNumber }))
+            };
+            logs.push(logEntry);
+            console.log('Fila de requisições ordenada:', logEntry.queue);
 
             if (!processing) {
                 await processQueue();
@@ -29,7 +40,7 @@ function initializeWebSocket(server) {
 
         ws.on('close', () => {
             clients = clients.filter(client => client.ws !== ws);
-            console.log('Cliente desconectado. Total de clientes:', clients.length, 'IP do cliente:', clientIP);
+            console.log('Cliente desconectado. Total de clientes:', clients.length, 'Número do cliente:', clientNumber);
         });
     });
 
@@ -41,8 +52,11 @@ async function processQueue() {
     processing = true;
 
     while (requestQueue.length > 0) {
+        processingQueue.push(requestQueue[0]);
+        console.log('Processando requisição:', { timestamp: requestQueue[0].req.timestamp, client: requestQueue[0].clientNumber });
         const currentRequest = requestQueue.shift();
-        const { req, ws, ip } = currentRequest;
+
+        const { req, ws, clientNumber } = currentRequest;
 
         try {
             await connect_db();  // Garante que a conexão com o banco de dados está estabelecida
@@ -55,8 +69,17 @@ async function processQueue() {
                 response = { status: 400, message: 'Invalid request type' };
             }
 
-            console.log(`Enviando requisição para o backend: timestamp ${req.timestamp}, cliente ${req.clientNumber}, IP ${ip}`);
+            console.log(`Enviando requisição para o backend: timestamp ${req.timestamp}, cliente ${clientNumber}`);
             ws.send(JSON.stringify(response));
+
+            logs.push({
+                timestamp: Date.now(),
+                type: 'processed',
+                clientNumber: clientNumber,
+                queue: requestQueue.map(r => ({ timestamp: r.req.timestamp, client: r.clientNumber }))
+            });
+            historyQueue.unshift(currentRequest);
+            console.log('Histórico das requisições:', historyQueue.map(r => ({ timestamp: r.req.timestamp, client: r.clientNumber })));
         } catch (error) {
             console.error('Erro ao processar requisição:', error);
             ws.send(JSON.stringify({ status: 500, message: error.message }));
@@ -90,4 +113,8 @@ async function handlePutPostRequest(req) {
     });
 }
 
-module.exports = { initializeWebSocket };
+function getLogs() {
+    return logs;
+}
+
+module.exports = { initializeWebSocket, getLogs };

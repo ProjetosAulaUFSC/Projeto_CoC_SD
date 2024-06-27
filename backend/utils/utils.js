@@ -58,7 +58,7 @@ function update_db(){
 async function connect_db() {
     await mongoose.disconnect();
     update_db();
-    console.log(`Connecting to Server${currentDB.id}@${currentDB.uri}`);
+    //console.log(`Connecting to Server${currentDB.id}`);
     await mongoose.connect(currentDB.uri);
     const database = mongoose.connection;
     
@@ -67,7 +67,7 @@ async function connect_db() {
         connect_db();
     });
     database.once('connected', () => {
-        console.log(`Connected to Server${currentDB.id}`);
+        //console.log(`Connected to Server${currentDB.id}`);
     });
 }
 //testado
