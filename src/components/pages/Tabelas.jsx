@@ -1,65 +1,45 @@
 import styles from './Tabelas.module.css'
+import Tabela3x4 from '../form/Table3x4'
 
 function Tabelas(){
+
+    // Dados para a primeira tabela
+    const tableData1 = {
+        header: [' ', 'Banco 1', 'Banco 2', 'Banco 3'],
+        rows: [
+        ['Token Atual', '-', '-', '-'],
+        ['Histórico Erro', '-', '-', '-']
+        ]
+    };
+
+    // Dados para a segunda tabela
+    const tableData2 = {
+        header: ['Estado', 'Banco 1', 'Banco 2', 'Banco 3'],
+        rows: [
+        ['Aguardando', '-', '-', '-'],
+        ['Acessando', '-', '-', '-']
+        ]
+    };
+
+    const tableData3 = {
+        header: ['Mensagem', 'Ordem', 'Histórico', 'Atual'],
+        rows: [
+        ['-', '-', '-', '-']
+        
+        ]
+    };
+
+
     return (
-        <div className={styles.tabelas_container}>
+        <div>
             <div>
-                <table>
-                    <tr>
-                        <th></th>
-                        <th>Banco 1</th>
-                        <th>Banco 2</th>
-                        <th>Banco 3</th>
-                    </tr>
-                    <tr>
-                        <td>Token Atual</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                    </tr>
-                    <tr>
-                        <td>Histórico Erro</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                    </tr>
-                </table> 
+            <Tabela3x4 data={tableData1} />
 
-                <table>
-                    <tr>
-                        <th></th>
-                        <th>Banco 1</th>
-                        <th>Banco 2</th>
-                        <th>Banco 3</th>
-                    </tr>
-                    <tr>
-                        <td>Aguardando</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                    </tr>
-                    <tr>
-                        <td>Acessando</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                    </tr>
-                </table> 
+            <Tabela3x4 data={tableData2} />
 
-                <table>
-                    <tr>
-                        <th>Mensagem</th>
-                        <th>Ordem</th>
-                        <th>Histórico</th>
-                        <th>Atual</th>
-                    </tr>
-                    <tr>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                    </tr>
-                </table> 
+            <Tabela3x4 data={tableData3} />
+
+
             </div>            
         </div>
     )

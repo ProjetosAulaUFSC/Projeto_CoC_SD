@@ -1,29 +1,33 @@
 import styles from './Table3x4.module.css'
 
-function Table3x4({l1x1,l1x2,l1x3,l1x4,l2x1,l2x2,l2x3,l2x4,l3x1,l3x2,l3x3,l3x4,l4x1,l4x2,l4x3,l4x4}){
-    <div>
+function Table3x4({data}) {
+    
+  
+    return (
+      <div className={styles.tabelas_container}>
         <table>
+          <thead>
             <tr>
-                <th></th>
-                <th>Banco 1</th>
-                <th>Banco 2</th>
-                <th>Banco 3</th>
+              {data.header.map((header, index) => (
+                <th key={index}>{header}</th>
+              ))}
             </tr>
-            <tr>
-                <td>Token Atual</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
+          </thead>
+          <tbody>
+          {data.rows.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((cell, cellIndex) => (
+                <td key={cellIndex}>{cell}</td>
+              ))}
             </tr>
-            <tr>
-                <td>Histórico Erro</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-        </table> 
-
-    </div>
-}
-
+          ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+  
+  // Example usage:
+// <Table3x4 data={{ row1: ["value1", "value2", "value3", "value4"], row2: ["value5", "value6", "value7", "value8"] }} headers:["header1,header,header3, header4"] />
+  
 export default Table3x4
