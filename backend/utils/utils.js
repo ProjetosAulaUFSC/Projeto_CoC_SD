@@ -23,7 +23,7 @@ setInterval(() => {
 
 function pass_token(){
     let current = current_db();
-    console.log(`Server ${current.id} has the token`);
+    //console.log(`Server ${current.id} has the token`);
     current.hasToken = false;
     if(databases[current.nextServer].active) databases[current.nextServer].hasToken = true;
     else{
