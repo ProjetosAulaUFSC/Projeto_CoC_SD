@@ -21,6 +21,7 @@ router.put('/updateCharacter', async (req, res) => {
 //testado
 router.delete('/deleteCharacter', async (req, res)=>{
     try{
+        utils.pause();
         await utils.connect_db();
         const exists = await Character.findOne({name: req.body.name});
         if(!exists) return res.status(404).json({message: "This character doesn't exist"});
@@ -43,6 +44,7 @@ router.get('/getOneOccupation', async (req, res) => {
 //testado
 router.post('/createOccupation', async (req, res) => {
     try {
+        utils.pause();
         console.log("Chamou POST Occupation");
         await utils.connect_db();
         const existingOcuppation = await Occupation.findOne({ name: req.body.name }).exec();
@@ -60,6 +62,7 @@ router.post('/createOccupation', async (req, res) => {
 //arrumar para usar o replicate
 router.put('/updateOccupation', async (req, res) => {
     try {
+        utils.pause();
         let data;
         for(let i=0; i<4;i++){
             await utils.connect_db();
@@ -74,6 +77,7 @@ router.put('/updateOccupation', async (req, res) => {
 //testado
 router.delete('/deleteOccupation', async (req, res) => {
     try {
+        utils.pause();
         await utils.connect_db();
         const used = await Character.findOne({fid_occupation: req.body.id});
         if(used) return res.status(403).json({message: "There is at least one Character of this occupation. Edit the character before deletins this occupation"});
@@ -87,8 +91,19 @@ router.delete('/deleteOccupation', async (req, res) => {
     }
 });
 
-router.get('/currentDB', (req, res) => { return res.status(200).json(utils.currentDB());});
+router.get('/currentDB', (req, res) => { return res.status(200).json(utils.used_db());});
 router.get('/killDB', (req, res) => { return res.status(200).json(utils.kill());});
 router.get('/ressurectDB', (req, res) => { return res.status(200).json(utils.ressurect());});
+router.delete('/deleteAll', async (req, res) => {
+    try {
+        utils.pause();
+        await utils.connect_db();
+        await Character.deleteMany({ name: { $ne: 'Debora' } }).exec();
+        return res.status(200).json("All data deleted except for Debora");
+    } catch (error) {
+        console.error('Error deleting all data:', error);
+        return res.status(500).json({ message: error.message });
+    }
+});
 
 module.exports = router;
