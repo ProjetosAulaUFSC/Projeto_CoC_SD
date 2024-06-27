@@ -17,17 +17,21 @@ let databases = (() => {
     return dbArray;
 })();
 
+let stop_token = false;
+let currentDB = databases[3];
+
 setInterval(() => {
     pass_token();
 }, 1000);
 
 function pass_token(){
-    let current = current_db();
-    //console.log(`Server ${current.id} has the token`);
-    current.hasToken = false;
-    if(databases[current.nextServer].active) databases[current.nextServer].hasToken = true;
+    if(stop_token) return;
+    update_db();
+    //console.log(`Server ${currentDB.id} has the token`);
+    currentDB.hasToken = false;
+    if(databases[currentDB.nextServer].active) databases[currentDB.nextServer].hasToken = true;
     else{
-        let next = current.nextServer;
+        let next = currentDB.nextServer;
         let count = 0;
         while(!databases[next].active){
             count++;
@@ -41,18 +45,17 @@ function pass_token(){
     }
 }
 
-function current_db(){
-    for(let database of databases){
-        if(database.hasToken) return database;
-    }
+function update_db(){
+    if(stop_token) currentDB = databases[currentDB.nextServer];
+    else currentDB = databases.find(db => db.hasToken);
 }
 
 //testado
 async function connect_db() {
     await mongoose.disconnect();
-
-    console.log(`Connecting to Server${current_db().id}@${current_db().uri}`);
-    await mongoose.connect(current_db().uri);
+    update_db();
+    console.log(`Connecting to Server${currentDB.id}@${currentDB.uri}`);
+    await mongoose.connect(currentDB.uri);
     const database = mongoose.connection;
     
     database.on('error', (error) => {
@@ -60,7 +63,7 @@ async function connect_db() {
         connect_db();
     });
     database.once('connected', () => {
-        console.log(`Connected to Server${current_db().id}`);
+        console.log(`Connected to Server${currentDB.id}`);
     });
 }
 //testado
@@ -153,8 +156,8 @@ async function replicate(type, operation, data){
 function databases_size(){return databases.length;}
 
 function kill(){
-    current_db().active = false; 
-    return ({message: `Banco de dados ${current_db().id} falhou`});
+    update_db().active = false; 
+    return ({message: `Banco de dados ${update_db().id} falhou`});
 }
 
 function ressurect(){
