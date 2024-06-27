@@ -10,29 +10,57 @@ let databases = (() => {
             id: i,
             uri: `${baseUrl}Server${i}`,
             nextServer: (i % 4),
-            hasToken: false,
+            hasToken: i===4,
             active: true
         });
     }
     return dbArray;
 })();
 
-let currentDb = databases[0];
+setInterval(() => {
+    pass_token();
+}, 1000);
+
+function pass_token(){
+    let current = current_db();
+    console.log(`Server ${current.id} has the token`);
+    current.hasToken = false;
+    if(databases[current.nextServer].active) databases[current.nextServer].hasToken = true;
+    else{
+        let next = current.nextServer;
+        let count = 0;
+        while(!databases[next].active){
+            count++;
+            next = databases[next].nextServer;
+            if(count === 4){
+                console.log("All databases are dead. Token is stuck. Attempting to revive them...");
+                ressurect();
+            }
+        }
+        databases[next].hasToken = true;
+    }
+}
+
+function current_db(){
+    for(let database of databases){
+        if(database.hasToken) return database;
+    }
+}
+
 //testado
 async function connect_db() {
     await mongoose.disconnect();
 
-    console.log(`Connecting to Server${currentDb.id}@${currentDb.uri}`);
-    await mongoose.connect(currentDb.uri);
+    console.log(`Connecting to Server${current_db().id}@${current_db().uri}`);
+    await mongoose.connect(current_db().uri);
     const database = mongoose.connection;
-    currentDb = databases[currentDb.nextServer];
     
     database.on('error', (error) => {
         console.error('Connection error:', error);
         connect_db();
     });
     database.once('connected', () => {
-        console.log(`Connected to Server${currentDb.id}`);
+        console.log(`Connected to Server${current_db().id}`);
     });
 }
 //testado
@@ -125,19 +153,13 @@ async function replicate(type, operation, data){
 function databases_size(){return databases.length;}
 
 function kill(){
-    currentDb.active = false; 
-    return ({message: `Banco de dados ${currentDb.id} falhou`});
+    current_db().active = false; 
+    return ({message: `Banco de dados ${current_db().id} falhou`});
 }
 
 function ressurect(){
     for (let database of databases) database.active = true; 
     return ({message: "Todos os bancos voltaram a funcionar normalmente"});
 }
-
-/*
-TODO lógica do Token Ring com o token efetivo:
-- intervalo de 0.1ms
-- timeout de 10s
-*/
 
 module.exports = { connect_db, replicate, find_in_db, kill, ressurect, put_post_character, databases_size };
