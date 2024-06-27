@@ -8,6 +8,8 @@ import Container from './components/layout/Container.jsx'
 import CriarPersonagem from './components/pages/CriarPersonagem.jsx'
 import Personagem from './components/pages/Personagem.jsx';
 
+import Tabelas from './components/pages/Tabelas.jsx'
+
 function App(){
   return(
     <BrowserRouter>
@@ -19,6 +21,7 @@ function App(){
           <Route  path='/personagens' element={<Personagens/>} />
           <Route  path='/criarpersonagem' element={<CriarPersonagem/>} />
           <Route  path='/personagem/:id' element={<Personagem/>}/>
+          <Route  path='/tabelas' element={<Tabelas/>}/>
         </Routes>
       </Container>
       <Footer/>
