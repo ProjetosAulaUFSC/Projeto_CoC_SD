@@ -46,7 +46,11 @@ function pass_token(){
 }
 
 function update_db(){
-    if(stop_token) currentDB = databases[currentDB.nextServer];
+    if(stop_token){
+        currentDB.hasToken = false;
+        currentDB = databases[currentDB.nextServer];
+        currentDB.hasToken = true;
+    }
     else currentDB = databases.find(db => db.hasToken);
 }
 
@@ -95,9 +99,11 @@ async function find_in_db(type, filter, res){
                 }
             if(hasFilter) data = await Occupation.findOne(filter).exec();
         }
+        unpause();
         return res.status(200).json(data);
     } catch (error) {
         console.error('Error retrieving characters:', error);
+        unpause();
         return res.status(500).json({ message: error.message });
     }
 }
@@ -155,8 +161,6 @@ async function replicate(type, operation, data){
     return newObject
 }
 
-function databases_size(){return databases.length;}
-
 function kill(){
     currentDB.active = false; 
     return ({message: `Banco de dados ${currentDB.id} falhou`});
@@ -167,7 +171,9 @@ function ressurect(){
     return ({message: "Todos os bancos voltaram a funcionar normalmente"});
 }
 
+function used_db(){return currentDB;}
+function databases_size(){return databases.length;}
 function pause(){stop_token = true;}
 function unpause(){stop_token = false;}
 
-module.exports = { connect_db, replicate, find_in_db, kill, ressurect, put_post_character, databases_size, pause };
+module.exports = { connect_db, replicate, find_in_db, kill, ressurect, put_post_character, databases_size, pause, used_db};

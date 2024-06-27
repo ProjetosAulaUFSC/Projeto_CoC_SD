@@ -91,7 +91,7 @@ router.delete('/deleteOccupation', async (req, res) => {
     }
 });
 
-router.get('/currentDB', (req, res) => { return res.status(200).json(utils.currentDB());});
+router.get('/currentDB', (req, res) => { return res.status(200).json(utils.used_db());});
 router.get('/killDB', (req, res) => { return res.status(200).json(utils.kill());});
 router.get('/ressurectDB', (req, res) => { return res.status(200).json(utils.ressurect());});
 router.delete('/deleteAll', async (req, res) => {
