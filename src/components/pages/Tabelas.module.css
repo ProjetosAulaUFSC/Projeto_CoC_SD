@@ -11,12 +11,15 @@
 
 }
 
-.tabelas_container th,td{
-    border-bottom: 2px solid #410082;
-    border-radius: 2px;
-    transition: color 0.5s;
+.botoes{
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
 }
 
-.tabelas_container th,td :hover{
-    border-bottom: 2px solid #8000ff;
+.botoes button{
+    margin-right: 20px;
 }
