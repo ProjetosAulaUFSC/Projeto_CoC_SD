@@ -43,7 +43,7 @@ function pass_token(){
 
 function current_db(){
     for(let database of databases){
-        if(database.hasToken) return database;
+        if(database.hasToken) return {database}
     }
 }
 
