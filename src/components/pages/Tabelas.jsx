@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Tabela3x4 from '../form/Table3x4'
+import styles from './Tabelas.module.css'
+import Botao from '../form/SubmitButton'
 
 function Tabelas(){
     // Dados para a primeira tabela
-    const tableData1 = {
+    let tableData1 = {
         header: [' ', 'Banco 1', 'Banco 2', 'Banco 3', 'Banco 4'],
         rows: [
-        ['Token Atual', '-', '-', '-', '-'],
-        ['Histórico Erro', '-', '-', '-', '-']
+        ['Token Atual', '-', '-', '-', '-']
         ]
     };
 
@@ -35,12 +36,12 @@ function Tabelas(){
             method: 'GET',
             headers:{'Content-type':'application/json'},
         }).then((response)=>response.json()).then((response)=>setDbData(response)).catch((err)=>console.log(err))
-        // .then(console.log(dbData))
+        //  .then(console.log(dbData))
     }
 
     useEffect(() => {
         syncDb()
-        const intervalId = setInterval(syncDb, 3000);
+        const intervalId = setInterval(syncDb, 500);
         return () => clearInterval(intervalId);
       }, []);  
     
@@ -50,12 +51,36 @@ function Tabelas(){
         return <div>Carregando...</div>; // Mostrar um indicador de carregamento enquanto os dados não chegam
       }
 
-      tableData1.rows[0][dbData.id] = "X"
+
+      function MatarServidor(){
+        fetch('http://localhost:3000/killDB', {
+        })
+        console.log("Acionado")
+
+      }    
+      
+      function Ressucitar(){
+        fetch('http://localhost:3000/ressurectDB', {
+        })
+        console.log("Acionado B")
+      }      
+
+      
+      tableData1.rows[0][dbData.id] = 'X'
+      
+    //   if(tableData1.active == false){tableData1.rows[1][dbData.id] = "X"}
 
     return (
         <div>
+            <div className={styles.tabelas_container}>
+
             <div>
-            <Tabela3x4 data={tableData1} />
+                <Tabela3x4 data={tableData1} />    
+                <div className={styles.botoes}>
+                    <Botao text='Matar Servidor' onClick={MatarServidor} />
+                    <Botao text='Reviver Servidores' onClick={Ressucitar}/>
+                </div>
+            </div>
 
             <Tabela3x4 data={tableData2} />
 
