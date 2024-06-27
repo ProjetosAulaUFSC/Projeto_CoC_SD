@@ -1,0 +1,35 @@
+.tabelas_container{
+    text-decoration: none;
+    text-align: center;
+    color: #fff;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px;
+
+}
+
+.tabelas_container table{
+    width: 500px;
+}
+
+.tabelas_container th{
+    margin-bottom: 10px;
+}
+
+.tabelas_container td{
+    height: 30px;
+}
+
+.tabelas_container th,td{
+    border-bottom: 2px solid #410082;
+    border-radius: 2px;
+
+    transition: color 0.5s;
+}
+
+.tabelas_container th,td :hover{
+    border-bottom: 2px solid #8000ff;
+}
