@@ -1,6 +1,6 @@
 # Banco de Dados Distribuído com Sequenciador Fixo e Token Ring
 
-![Tecnologias Usadas](https://skillicons.dev/icons?i=nodejs,mongodb,express,websocket, mongoose, ws, cors&perline=4)
+![Tecnologias Usadas](https://skillicons.dev/icons?i=nodejs,mongodb,express,websocket,mongoose,ws,cors&perline=4)
 
 ## 🦑 Proposta do Projeto
 
