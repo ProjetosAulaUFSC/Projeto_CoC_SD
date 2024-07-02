@@ -1,6 +1,6 @@
 # Banco de Dados Distribuído com Sequenciador Fixo e Token Ring
 
-![Tecnologias Usadas](https://skillicons.dev/icons?i=nodejs,mongodb,express,websocket,mongoose,ws,cors&perline=4)
+![Tecnologias Usadas](https://skillicons.dev/icons?i=nodejs,mongodb,express,react&perline=4)
 
 ## 🦑 Proposta do Projeto
 
@@ -29,3 +29,125 @@ Client                Sequenciador Fixo              Token Ring
    |                           |<--- Processa Requisição --|
    |                           |                           |
    |<--- Recebe Resposta ------|                           |
+```
+
+### Requisitor Funcionais
+
+#### Cliente
+- Enviar Requisições: O cliente deve ser capaz de enviar requisições de operações (POST, PUT, FIND, DELETE) ao servidor.
+
+- Receber Respostas: O cliente deve ser capaz de receber respostas do servidor sobre o status das operações solicitadas.
+
+- Identificação de Cliente: Cada cliente deve ter um identificador único para rastreamento das requisições.
+
+#### Servidor
+
+- Ordenação de Requisições: O servidor deve ordenar as requisições recebidas com base em timestamps.
+
+- Processamento de Requisições: O servidor deve processar as requisições em ordem e garantir a consistência dos dados.
+
+- Controle de Acesso: O servidor deve controlar o acesso às réplicas de banco de dados utilizando um Token Ring.
+
+- Logs de Operações: O servidor deve manter um log das operações realizadas para auditoria e análise.
+
+## ⚙️ Pré-requisitos
+- Node.js
+- MongoDB (preferencialmente MongoDB Atlas)
+- dotenv
+- express
+- mongoose
+- WebScoket
+- cors
+
+## ⚡ Começando
+1. Clone o repositório:
+```shell
+    git clone https://github.com/ProjetosAulaUFSC/Projeto_CoC_SD.git
+```
+2. Instale as dependências: `npm install`
+
+3. Configure as variáveis de ambiente:
+Crie um arquivo .env na raiz do projeto com as seguintes informações:
+```perl
+    DATABASE_URL=mongodb+srv://<username>:<password>@cluster0.mongodb.net/
+```
+4. Inicie o servidor : `node app.js`
+5. Teste o projeto com multiplos clientes: `node scripts/multipleClients.js`
+6. Você pode ver a interface do cliente usando o seguinte comando:
+```shell
+    npm start
+```
+
+## 🚀 Funcionalidades
+- Adicionar Personagens: Permite adicionar novos personagens ao banco de dados.
+
+- Atualizar Personagens: Permite atualizar informações de personagens existentes.
+
+- Buscar Personagens: Permite buscar personagens com base em filtros específicos.
+
+- Excluir Personagens: Permite excluir personagens do banco de dados.
+Logs de Operações: Mantém um histórico das operações realizadas para auditoria e análise.
+
+## 🛠️ Endpoints
+
+### Adicionar um Personagem
+```bash
+    POST /characters
+```
+### Corpo da Requisição:
+
+```json
+{
+    "name": "Nome do Personagem",
+    "STR": 50,
+    "CON": 70,
+    "SIZ": 40,
+    "DEX": 50,
+    "APP": 70,
+    "INT": 70,
+    "POW": 60,
+    "EDU": 70,
+    "LUC": 40,
+    "occupation": "Ocupação",
+    "HP": 10,
+    "MAG": 12,
+    "LUC_Temp": 40,
+    "SAN_Temp": 50
+}
+```
+### Atualizar um Personagem
+```bash
+    PUT /characters/:id
+```
+Corpo da Requisição: Semelhante ao de adicionar um personagem.
+
+### Buscar Personagens
+```bash
+GET /characters
+```
+Parâmetros de Query: Filtros para busca (opcionais).
+
+### Excluir um Personagem
+```bash
+DELETE /characters/:id
+```
+
+### Log de Operações
+```bash
+GET /logs
+```
+Retorna os logs das operações realizadas - Cliente -> Servidor -> Sequenciador Fixo -> Banco de Dados .
+
+### Matar Servidor
+```bash
+GET /killDB
+
+```
+Desativa temporariamente um dos bancos de dados para simular falhas.
+
+## 🧑‍💻 Contribuindo
+1. Faça um fork do repositório
+2. Crie uma nova branch: git checkout -b minha-nova-funcionalidade
+3. Faça suas alterações e commite-as: git commit -m 'Adiciona nova funcionalidade'
+4. Faça push para a branch: git push origin minha-nova-funcionalidade
+5. Envie um pull request
