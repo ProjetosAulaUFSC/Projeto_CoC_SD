@@ -1,70 +1,31 @@
-# Getting Started with Create React App
+# Banco de Dados Distribuído com Sequenciador Fixo e Token Ring
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Tecnologias Usadas](https://skillicons.dev/icons?i=nodejs,mongodb,express,websocket, mongoose, ws, cors&perline=4)
 
-## Available Scripts
+## 🦑 Proposta do Projeto
 
-In the project directory, you can run:
+Este projeto tem como objetivo implementar um sistema de banco de dados distribuído utilizando MongoDB, Node.js, e WebSockets. A proposta é garantir a consistência das operações de escrita em um ambiente distribuído, utilizando um sequenciador fixo para ordenar as operações de escrita e um Token Ring para controlar o acesso às réplicas de banco de dados.
 
-### `npm start`
+Para demonstrar a aplicação real deste banco de dados distribuído, escolhemos um contexto único e envolvente: armazenar personagens de RPG do sistema de Call of Cthulhu - 7ª edição. Este jogo, conhecido por sua rica narrativa e profundidade de personagens, oferece um cenário perfeito para ilustrar a complexidade e a necessidade de consistência em um banco de dados distribuído. Através desta aplicação, jogadores e mestres de jogo podem armazenar, acessar e gerenciar informações detalhadas sobre seus personagens, garantindo que todas as operações sejam consistentes e sincronizadas entre diferentes réplicas do banco de dados.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📚 Arquitetura do Projeto
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Componentes Principais
 
-### `npm test`
+- **WebSocket**: Utilizado para comunicação em tempo real entre os clientes e o servidor, garantindo que as requisições sejam recebidas e processadas de forma ordenada.
+- **Sequenciador Fixo**: Responsável por ordenar as requisições recebidas dos clientes com base em um timestamp, garantindo que as operações sejam executadas na ordem correta.
+- **Token Ring**: Utilizado para controlar o acesso às réplicas de banco de dados distribuídas, garantindo que apenas uma réplica execute operações de escrita por vez.
+- **MongoDB**: Banco de dados utilizado para armazenar as informações dos personagens de RPG.
+- **Node.js e Express**: Servidor backend responsável por gerenciar as requisições, conectar-se ao banco de dados e realizar as operações necessárias.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Diagrama de Sequência
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```plaintext
+Client                Sequenciador Fixo              Token Ring
+   |                           |                           |
+   |--- Envia Requisição ----->|                           |
+   |                           |--- Ordena Requisição ---> |
+   |                           |                           |
+   |                           |<--- Processa Requisição --|
+   |                           |                           |
+   |<--- Recebe Resposta ------|                           |
